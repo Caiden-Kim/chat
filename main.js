@@ -79,6 +79,9 @@ socket.on('room left', (roomCode) => {
 socket.on('username taken', () => {
   alert('That username is already taken in this room. Choose another.');
   currentRoom = '';
+
+  username = prompt("What is your new username?");
+  socket.emit('join room', roomCode);
 });
 
 var sentToday = false;
@@ -149,7 +152,7 @@ function displayMessage(data) {
 
   if (username === 'System') {
     const div = document.createElement("div");
-    div.textContent = `${username}: ${message}`;
+    div.textContent = `${message}`;
     div.classList.add("notification");
     messageContainer.append(div);
   } else {
