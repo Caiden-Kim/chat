@@ -11,9 +11,8 @@ const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
 let username = prompt("What is your username?");
-while (!username || username.trim() === "" && username !== "System") {
-  // Keep asking until the user provides a valid username
-  username = prompt("What is your username? (Minimum 1 character, cannot be \"System\")");
+while (!username || username.trim() === "") {
+  username = prompt("What is your username? (Minimum 1 character)");
 }
 
 const socket = io('https://5000.cs.glitchedblox.net');
@@ -81,7 +80,6 @@ socket.on('username taken', () => {
   currentRoom = '';
 
   username = prompt("What is your new username?");
-  socket.emit('join room', roomCode);
 });
 
 var sentToday = false;
