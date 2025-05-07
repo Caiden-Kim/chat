@@ -11,9 +11,9 @@ const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
 let username = prompt("What is your username?");
-while (!username || username.trim() === "") {
+while (!username || username.trim() === "" && username !== "System") {
   // Keep asking until the user provides a valid username
-  username = prompt("What is your username? (Minimum 1 character)");
+  username = prompt("What is your username? (Minimum 1 character, cannot be \"System\")");
 }
 
 const socket = io('https://5000.cs.glitchedblox.net');
@@ -21,6 +21,7 @@ let currentRoom = ''
 
 socket.on('connect', () => {
   console.log('Connected to backend');
+  socket.emit('register username', username);
 });
 
 socket.on('chat message', (msg) => {
@@ -60,11 +61,24 @@ socket.on('room created', (code) => {
 socket.on('room joined', (code) => {
   currentRoom = code;
   roomText.textContent = "Current Room: " + currentRoom
+  makeRoomButton.textContent = "Leave Room";
   alert(`Successfully joined room: ${code}`);
 });
 
 socket.on('room not found', () => {
   alert('Room not found. Please check the code and try again.');
+});
+
+socket.on('room left', (roomCode) => {
+  alert(`Left room: ${roomCode}`);
+  currentRoom = '';
+  roomText.textContent = "Not in a room";
+  makeRoomButton.textContent = "Create Room";
+});
+
+socket.on('username taken', () => {
+  alert('That username is already taken in this room. Choose another.');
+  currentRoom = '';
 });
 
 var sentToday = false;
@@ -77,16 +91,18 @@ joinRoomButton.addEventListener("click", () => {
 });
 
 makeRoomButton.addEventListener("click", () => {
-  if (currentRoom == '') {
+  if (currentRoom === '') {
     socket.emit('create room');
     makeRoomButton.textContent = "Leave Room";
   } else {
-    socket.emit('disconnect');
-    makeRoomButton.textContent = "Create Room"
-    roomText.textContent = "Current Room: N/A"
-    currentRoom = ''
+    socket.emit('leave room', currentRoom);
+    
+    messageContainer.innerHTML = '';
+    lastSentTime = null
+    currentDate = null;
+    sentToday = false
   }
-})
+});
 
 function displayMessage(data) {
   const { message, username } = data;
@@ -131,8 +147,15 @@ function displayMessage(data) {
 
   lastSentTime = Date.now();
 
-  const div = document.createElement("div");
-  div.textContent = `${username}: ${message}`;
-  div.classList.add("message");
-  messageContainer.append(div);
+  if (username === 'System') {
+    const div = document.createElement("div");
+    div.textContent = `${username}: ${message}`;
+    div.classList.add("notification");
+    messageContainer.append(div);
+  } else {
+    const div = document.createElement("div");
+    div.textContent = `${username}: ${message}`;
+    div.classList.add("message");
+    messageContainer.append(div);
+  }
 }
