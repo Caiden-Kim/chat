@@ -11,7 +11,8 @@ const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
 let username = prompt("What is your username?");
-while (username.trim() === "" || username == null) {
+while (!username || username.trim() === "") {
+  // Keep asking until the user provides a valid username
   username = prompt("What is your username? (Minimum 1 character)");
 }
 
@@ -82,6 +83,7 @@ makeRoomButton.addEventListener("click", () => {
   } else {
     socket.emit('disconnect');
     makeRoomButton.textContent = "Create Room"
+    roomText.textContent = "Current Room: N/A"
     currentRoom = ''
   }
 })
