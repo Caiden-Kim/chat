@@ -56,6 +56,8 @@ body {
     width: 480px;
     white-space: nowrap;
     overflow-wrap: break-word;
+
+    animation: 1.5s 1 forwards message;
 }
 
 .input-container {
@@ -64,4 +66,16 @@ body {
     align-items: center;
     flex-direction: column;
     /*line-height: 5px;*/
+}
+
+@keyframes message {
+    0% {
+        transform: translateX(-150%);
+        font-size: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        font-size: 1em;
+    }
 }
