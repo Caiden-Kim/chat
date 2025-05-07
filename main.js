@@ -13,6 +13,21 @@ while (name.trim() === "" || name == null) {
   name = prompt("What is your name? (Minimum 1 character)");
 }
 
+const socket = io('https://5000.cn.glitchedblox.net');
+
+socket.on('connect', () => {
+  console.log('Connected to backend');
+});
+
+socket.on('chat message', (msg) => {
+  console.log('New message:', msg);
+  displayMessage(msg);
+});
+
+function sendMessage(msg) {
+  socket.emit('chat message', msg);
+}
+
 var sentToday = false;
 var lastSentTime;
 var currentDate;
@@ -28,6 +43,7 @@ form.addEventListener("submit", (e) => {
 
   if (message.trim() === "") return;
   displayMessage(message);
+  sendMessage(message)
   messageContainer.scrollTop = messageContainer.scrollHeight;
 
   messageInput.value = "";
