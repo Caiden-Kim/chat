@@ -28,7 +28,10 @@ socket.on('chat message', (msg) => {
 });
 
 function sendMessage(msg) {
-  socket.emit('chat message', currentRoom, msg);
+  socket.emit('chat message', {
+    room: currentRoom,
+    message: msg
+  });
 }
 
 socket.on('room created', (code) => {
