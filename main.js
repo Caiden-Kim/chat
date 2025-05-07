@@ -29,6 +29,20 @@ function sendMessage(msg) {
   socket.emit('chat message', msg);
 }
 
+socket.on('room created', (code) => {
+  currentRoom = code;
+  alert(`Room created! Share this code: ${code}`);
+});
+
+socket.on('room joined', (code) => {
+  currentRoom = code;
+  alert(`Successfully joined room: ${code}`);
+});
+
+socket.on('room not found', () => {
+  alert('Room not found. Please check the code and try again.');
+});
+
 var sentToday = false;
 var lastSentTime;
 var currentDate;
