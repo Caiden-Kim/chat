@@ -11,7 +11,7 @@ const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
 var name = prompt("What is your name?");
-while (name.trim() === "" || name == null) {
+while (name.trim() == "" || name == null) {
   name = prompt("What is your name? (Minimum 1 character)");
 }
 
