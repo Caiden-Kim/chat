@@ -4,6 +4,7 @@
 const form = document.getElementById("form");
 const messageButton = document.getElementById("send-button");
 const joinRoomButton = document.getElementById("room-button");
+const makeRoomButton = document.getElementById("create-room")
 const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const messageContainer = document.getElementById("message-container");
@@ -32,6 +33,8 @@ var sentToday = false;
 var lastSentTime;
 var currentDate;
 
+let currentRoom = ''
+
 //const filter = new Filter();
 //filter.addWords(atob("c2lnbWE="));
 
@@ -42,7 +45,6 @@ form.addEventListener("submit", (e) => {
   const room = roomInput.value;
 
   if (message.trim() === "") return;
-  displayMessage(message);
   sendMessage(message)
   messageContainer.scrollTop = messageContainer.scrollHeight;
 
@@ -50,8 +52,13 @@ form.addEventListener("submit", (e) => {
 });
 
 joinRoomButton.addEventListener("click", () => {
-  console.log("Join room button clicked");
+  const roomCode = roomInput.value.trim().toUpperCase();
+  socket.emit('join room', roomCode);
 });
+
+makeRoomButton.addEventListener("click", () => {
+  socket.emit('create room');
+})
 
 function displayMessage(message) {
   const now = new Date();
