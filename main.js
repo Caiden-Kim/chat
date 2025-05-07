@@ -10,8 +10,8 @@ const roomInput = document.getElementById("room-input");
 const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
-var username = prompt("What is your username?");
-while (username.trim() == "" || username == null) {
+let username = prompt("What is your username?");
+while (username.trim() === "" || username == null) {
   username = prompt("What is your username? (Minimum 1 character)");
 }
 
@@ -25,6 +25,7 @@ socket.on('connect', () => {
 socket.on('chat message', (msg) => {
   console.log('New message:', msg);
   displayMessage(msg);
+  lastSentTime = Date.now();
 });
 
 function sendMessage() {
@@ -36,12 +37,12 @@ function sendMessage() {
 
   socket.emit('chat message', {
     room: currentRoom,
-    message: rawMessage
+    message: rawMessage,
+    username: username
   });
 
   messageInput.value = "";
   messageContainer.scrollTop = messageContainer.scrollHeight;
-  lastSentTime = Date.now();
 }
 
 form.addEventListener("submit", (e) => {
@@ -69,23 +70,6 @@ var sentToday = false;
 var lastSentTime;
 var currentDate;
 
-//const filter = new Filter();
-//filter.addWords(atob("c2lnbWE="));
-
-/*
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  var message = messageInput.value;
-
-  if (message.trim() === "") return;
-  sendMessage(message)
-  messageContainer.scrollTop = messageContainer.scrollHeight;
-
-  messageInput.value = "";
-});
-*/
-
 joinRoomButton.addEventListener("click", () => {
   const roomCode = roomInput.value.trim().toUpperCase();
   socket.emit('join room', roomCode);
@@ -102,7 +86,9 @@ makeRoomButton.addEventListener("click", () => {
   }
 })
 
-function displayMessage(message) {
+function displayMessage(data) {
+  const { message, username } = data;
+
   const now = new Date();
   var hours = now.getHours();
   var minutes = now.getMinutes();
@@ -144,7 +130,7 @@ function displayMessage(message) {
   lastSentTime = Date.now();
 
   const div = document.createElement("div");
-  div.textContent = username + ": " + message;
+  div.textContent = `${username}: ${message}`;
   div.classList.add("message");
   messageContainer.append(div);
 }
