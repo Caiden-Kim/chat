@@ -13,7 +13,7 @@ while (name.trim() === "" || name == null) {
   name = prompt("What is your name? (Minimum 1 character)");
 }
 
-const socket = io('https://5000.cn.glitchedblox.net');
+const socket = io('https://5000.cs.glitchedblox.net');
 
 socket.on('connect', () => {
   console.log('Connected to backend');
