@@ -7,6 +7,7 @@ const joinRoomButton = document.getElementById("room-button");
 const makeRoomButton = document.getElementById("create-room")
 const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
+const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
 var name = prompt("What is your name?");
@@ -32,11 +33,13 @@ function sendMessage(msg) {
 
 socket.on('room created', (code) => {
   currentRoom = code;
+  roomText.textContent = "Current Room: " + currentRoom
   alert(`Room created! Share this code: ${code}`);
 });
 
 socket.on('room joined', (code) => {
   currentRoom = code;
+  roomText.textContent = "Current Room: " + currentRoom
   alert(`Successfully joined room: ${code}`);
 });
 
@@ -66,11 +69,18 @@ form.addEventListener("submit", (e) => {
 
 joinRoomButton.addEventListener("click", () => {
   const roomCode = roomInput.value.trim().toUpperCase();
+  socket.emit('disconnect');
   socket.emit('join room', roomCode);
 });
 
 makeRoomButton.addEventListener("click", () => {
-  socket.emit('create room');
+  if (currentRoom == '') {
+    socket.emit('create room');
+    makeRoomButton.textContent = "Leave Room";
+  } else {
+    socket.emit('disconnect');
+    makeRoomButton.textContent = "Create Room"
+  }
 })
 
 function displayMessage(message) {
