@@ -15,6 +15,7 @@ while (name.trim() === "" || name == null) {
 }
 
 const socket = io('https://5000.cs.glitchedblox.net');
+let currentRoom = ''
 
 socket.on('connect', () => {
   console.log('Connected to backend');
@@ -46,8 +47,6 @@ socket.on('room not found', () => {
 var sentToday = false;
 var lastSentTime;
 var currentDate;
-
-let currentRoom = ''
 
 //const filter = new Filter();
 //filter.addWords(atob("c2lnbWE="));
