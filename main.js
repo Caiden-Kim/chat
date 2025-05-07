@@ -10,9 +10,9 @@ const roomInput = document.getElementById("room-input");
 const roomText = document.getElementById("room-text")
 const messageContainer = document.getElementById("message-container");
 
-var name = prompt("What is your name?");
-while (name.trim() == "" || name == null) {
-  name = prompt("What is your name? (Minimum 1 character)");
+var username = prompt("What is your username?");
+while (username.trim() == "" || username == null) {
+  username = prompt("What is your username? (Minimum 1 character)");
 }
 
 const socket = io('https://5000.cs.glitchedblox.net');
@@ -27,12 +27,27 @@ socket.on('chat message', (msg) => {
   displayMessage(msg);
 });
 
-function sendMessage(msg) {
+function sendMessage() {
+  const rawMessage = messageInput.value.trim();
+  if (!rawMessage || !currentRoom) {
+    console.warn('Message or room is missing', { rawMessage, currentRoom });
+    return;
+  }
+
   socket.emit('chat message', {
     room: currentRoom,
-    message: msg
+    message: rawMessage
   });
+
+  messageInput.value = "";
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+  lastSentTime = Date.now();
 }
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  sendMessage();
+});
 
 socket.on('room created', (code) => {
   currentRoom = code;
@@ -57,11 +72,11 @@ var currentDate;
 //const filter = new Filter();
 //filter.addWords(atob("c2lnbWE="));
 
+/*
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   var message = messageInput.value;
-  const room = roomInput.value;
 
   if (message.trim() === "") return;
   sendMessage(message)
@@ -69,10 +84,10 @@ form.addEventListener("submit", (e) => {
 
   messageInput.value = "";
 });
+*/
 
 joinRoomButton.addEventListener("click", () => {
   const roomCode = roomInput.value.trim().toUpperCase();
-  socket.emit('disconnect');
   socket.emit('join room', roomCode);
 });
 
@@ -83,6 +98,7 @@ makeRoomButton.addEventListener("click", () => {
   } else {
     socket.emit('disconnect');
     makeRoomButton.textContent = "Create Room"
+    currentRoom = ''
   }
 })
 
@@ -128,7 +144,7 @@ function displayMessage(message) {
   lastSentTime = Date.now();
 
   const div = document.createElement("div");
-  div.textContent = name + ": " + message;
+  div.textContent = username + ": " + message;
   div.classList.add("message");
   messageContainer.append(div);
 }
