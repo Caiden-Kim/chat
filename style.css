@@ -4,6 +4,7 @@
     overflow-x: hidden;
     max-height: 100%;
     max-width: max-content;
+    flex-direction: column-reverse;
     padding-inline: 10px;
 }
 

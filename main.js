@@ -1,5 +1,3 @@
-//import { Filter } from "https://www.unpkg.com/browse/bad-words@4.0.0/";
-
 // Getting the elements within the document
 const form = document.getElementById("form");
 const messageButton = document.getElementById("send-button");
